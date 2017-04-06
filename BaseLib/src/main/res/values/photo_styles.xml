@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="inoutformbottom" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/photo_anim_entry_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/photo_anim_leave_from_bottom</item>
+    </style>
+
+</resources>

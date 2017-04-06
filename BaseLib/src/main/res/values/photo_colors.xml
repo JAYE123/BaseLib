@@ -1,0 +1,5 @@
+<resources>
+    <color name="photo_white" >#ffffff</color>
+    <color name="bg_floder_press">#bdbdbd</color>
+    <color name="black_50">#7f000000</color>
+</resources>
