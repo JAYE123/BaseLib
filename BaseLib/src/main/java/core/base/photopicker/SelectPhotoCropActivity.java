@@ -296,7 +296,7 @@ public class SelectPhotoCropActivity extends FragmentActivity implements View.On
         uCrop.withAspectRatio(width, height);
         //构造新的option 加入传来的参数
         UCrop.Options options=getDefaultOption();
-        options.setOvalDimmedLayer(isOval);
+//        options.setOvalDimmedLayer(isOval);
         options.getOptionBundle().putAll(extras);
         //构造新的ucrop
         uCrop=uCrop.withOptions(options);
