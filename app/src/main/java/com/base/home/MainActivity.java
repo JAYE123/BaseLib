@@ -7,8 +7,6 @@ import com.base.core.log.L;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String baseLib;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
