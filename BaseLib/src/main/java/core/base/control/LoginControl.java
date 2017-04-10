@@ -10,7 +10,7 @@ import android.text.TextUtils;
  * @类说明:登录控制类
  */
 public class LoginControl {
-    private static SharedPreferences login_sp =null;
+    public static SharedPreferences login_sp = null;
     protected static String PRFS_LOGIN_TOKEN = "token";
     protected static String PRFS_LOGIN_USERNAME = "username";
     protected static String PRFS_LOGIN_USERPSW = "userpsw";
@@ -24,11 +24,12 @@ public class LoginControl {
     protected static int userId;
     protected static int sendPointId;
 
-    public static synchronized void init(Context context){
-        if(login_sp ==null){
+    public static synchronized void init(Context context) {
+        if (login_sp == null) {
             login_sp = context.getSharedPreferences(LoginControl.class.getName(), Context.MODE_PRIVATE);
         }
     }
+
     public static void saveToken(String token) {
         if (!TextUtils.isEmpty(token)) {
             userToken = token;
@@ -47,6 +48,23 @@ public class LoginControl {
         userId = login_sp.getInt(PRFS_LOGIN_USERID, 0);
         return userId;
     }
+
+    public static void saveIsGuide(boolean isGuide) {
+        login_sp.edit().putBoolean("isGuide", isGuide).commit();
+    }
+
+    public static boolean getIsGuide() {
+        return login_sp.getBoolean("isGuide", false);
+    }
+
+    public static void saveIntoAppNum(int number) {
+        login_sp.edit().putInt("appNum", number).commit();
+    }
+
+    public static int getIntoAppNum() {
+        return login_sp.getInt("appNum", 0);
+    }
+
     public static void saveSendPointId(int id) {
         if (id > 0) {
             sendPointId = id;

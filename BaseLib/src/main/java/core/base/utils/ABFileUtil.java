@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +32,9 @@ import java.nio.charset.Charset;
 
 import core.base.application.ABApplication;
 import core.base.log.L;
+import core.base.time.ABTimeUtil;
+
+import static android.R.attr.path;
 
 /**
  * 文件操作类
@@ -515,6 +519,7 @@ public class ABFileUtil {
 
     /**
      * 文件转化为Object
+     *
      * @param fileName 文件全部路径
      * @return Object null 读取失败
      * 实现序列化的对象也可以写入本地
@@ -552,7 +557,8 @@ public class ABFileUtil {
 
     /**
      * 把Object输出到文件
-     * @param obj 要保存的对象，可以是List<String>这种列表对象
+     *
+     * @param obj        要保存的对象，可以是List<String>这种列表对象
      * @param outputFile 输出文件的绝对路径
      */
     public static void object2File(Object obj, String outputFile) {
@@ -584,32 +590,34 @@ public class ABFileUtil {
 
     /**
      * 获取单个文件的大小or获取目录包括包含的文件的总大小
+     *
      * @param directory 文件获取目录
      * @return
      */
-    public static long getDirectorySize(File directory){
-        if(!directory.exists()) return 0;
-        if(directory.isDirectory()){
-            long directorySize=0;
-            for(File file:directory.listFiles()){
-                directorySize+=getDirectorySize(file);
+    public static long getDirectorySize(File directory) {
+        if (!directory.exists()) return 0;
+        if (directory.isDirectory()) {
+            long directorySize = 0;
+            for (File file : directory.listFiles()) {
+                directorySize += getDirectorySize(file);
             }
             return directorySize;
-        }else{
+        } else {
             return directory.length();
         }
     }
 
     /**
      * 清空某个目录下的所有文件和文件夹
+     *
      * @param directory
      */
-    public static void clearDirectory(File directory){
-        if(directory.exists()&&directory.isDirectory()){
-            for(File file:directory.listFiles()){
-                if(file.exists()&&file.isFile()) {
+    public static void clearDirectory(File directory) {
+        if (directory.exists() && directory.isDirectory()) {
+            for (File file : directory.listFiles()) {
+                if (file.exists() && file.isFile()) {
                     file.delete();
-                }else if(file.exists()&&file.isDirectory()){
+                } else if (file.exists() && file.isDirectory()) {
                     clearDirectory(file);
                     file.delete();
                 }
@@ -757,6 +765,7 @@ public class ABFileUtil {
 
     /**
      * 写文本到文件
+     *
      * @param path
      * @param content
      * @return
@@ -782,6 +791,37 @@ public class ABFileUtil {
     }
 
     public static String formatFileSize(long directorySize) {
-        return Formatter.formatFileSize(ABApplication.getInstance(),directorySize);
+        return Formatter.formatFileSize(ABApplication.getInstance(), directorySize);
+    }
+
+    public static void saveImageToGallery(Context context, Bitmap bmp, String fileDir) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), fileDir);
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = ABTimeUtil.millisToStringDate(System.currentTimeMillis()) + ".jpg";
+
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
     }
 }
