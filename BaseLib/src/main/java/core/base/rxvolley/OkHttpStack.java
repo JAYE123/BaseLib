@@ -41,8 +41,6 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 
-
-
 /**
  * OkHttp的执行器,可用于替换原框架自带的HttpUrlConnection执行器
  * 修改自: https://gist.github.com/bryanstern/4e8f1cb5a8e14c202750
@@ -56,16 +54,15 @@ public class OkHttpStack implements IHttpStack {
     }
 
     @Override
-    public URLHttpResponse performRequest(Request<?> request, ArrayList<HttpParamsEntry>
-            additionalHeaders) throws IOException {
+    public URLHttpResponse performRequest(Request<?> request, ArrayList<HttpParamsEntry> additionalHeaders) throws IOException {
+
         OkHttpClient client = mClient.clone();
         int timeoutMs = request.getTimeoutMs();
         client.setConnectTimeout(timeoutMs, TimeUnit.MILLISECONDS);
         client.setReadTimeout(timeoutMs, TimeUnit.MILLISECONDS);
         client.setWriteTimeout(timeoutMs, TimeUnit.MILLISECONDS);
 
-        com.squareup.okhttp.Request.Builder okHttpRequestBuilder = new com.squareup.okhttp
-                .Request.Builder();
+        com.squareup.okhttp.Request.Builder okHttpRequestBuilder = new com.squareup.okhttp.Request.Builder();
         okHttpRequestBuilder.url(request.getUrl());
 
 
@@ -85,8 +82,8 @@ public class OkHttpStack implements IHttpStack {
         return responseFromConnection(okHttpResponse);
     }
 
-    private URLHttpResponse responseFromConnection(Response okHttpResponse)
-            throws IOException {
+    private URLHttpResponse responseFromConnection(Response okHttpResponse) throws IOException {
+
         URLHttpResponse response = new URLHttpResponse();
         //contentStream
         int responseCode = okHttpResponse.code();
@@ -119,9 +116,7 @@ public class OkHttpStack implements IHttpStack {
         return response;
     }
 
-    private static void setConnectionParametersForRequest(com.squareup.okhttp.Request.Builder
-                                                                  builder, Request<?> request)
-            throws IOException {
+    private static void setConnectionParametersForRequest(com.squareup.okhttp.Request.Builder builder, Request<?> request) throws IOException {
         switch (request.getMethod()) {
             case RxVolley.Method.GET:
                 builder.get();
@@ -155,7 +150,6 @@ public class OkHttpStack implements IHttpStack {
     private static RequestBody createRequestBody(Request r) {
         final byte[] body = r.getBody();
         if (body == null) return null;
-
-        return RequestBody.create(MediaType.parse(r.getBodyContentType()), body);
+        return RequestBody.create(MediaType.parse("application/x-www-form-urlencoded;charset=utf-8"), body);
     }
 }

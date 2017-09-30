@@ -9,10 +9,12 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
 import android.text.format.Formatter;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -28,6 +30,9 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 
 import core.base.application.ABApplication;
@@ -45,7 +50,7 @@ public class ABFileUtil {
 
     public static final String SD_CARD_PATH = Environment.getExternalStorageDirectory().toString();
 
-    public static String getSDPATH() {
+    public static String getSDCARD_PATH() {
         return SD_CARD_PATH;
     }
 
@@ -67,7 +72,7 @@ public class ABFileUtil {
      *
      * @throws IOException
      */
-    public static File creatSDFile(String fileRelativePath) throws IOException {
+    public static File createSDFile(String fileRelativePath) throws IOException {
         File file = new File(SD_CARD_PATH + fileRelativePath);
         file.createNewFile();
         return file;
@@ -78,7 +83,7 @@ public class ABFileUtil {
      *
      * @param dirRelativePath
      */
-    public static File creatSDDir(String dirRelativePath) {
+    public static File createSDDir(String dirRelativePath) {
         File dir = new File(SD_CARD_PATH + dirRelativePath);
         dir.mkdirs();
         return dir;
@@ -102,8 +107,8 @@ public class ABFileUtil {
         File file = null;
         OutputStream output = null;
         try {
-            creatSDDir(relativePath);
-            file = creatSDFile(relativePath + fileName);
+            createSDDir(relativePath);
+            file = createSDFile(relativePath + fileName);
             output = new FileOutputStream(file);
             byte buffer[] = new byte[4 * 1024];
             int length = 0;
@@ -148,8 +153,8 @@ public class ABFileUtil {
         File file = null;
         FileOutputStream out = null;
         try {
-            creatSDDir(relativePath);
-            file = creatSDFile(relativePath + fileName);
+            createSDDir(relativePath);
+            file = createSDFile(relativePath + fileName);
             out = new FileOutputStream(file.getPath());
             bm.compress(Bitmap.CompressFormat.JPEG, quality, out);
             return 0;
@@ -218,8 +223,8 @@ public class ABFileUtil {
         FileOutputStream out = null;
         ByteArrayInputStream bais = null;
         try {
-            creatSDDir(relativePath);
-            file = creatSDFile(relativePath + fileName);
+            createSDDir(relativePath);
+            file = createSDFile(relativePath + fileName);
             out = new FileOutputStream(file.getPath());
 //            bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
             bais = compressImage(bm, capacity);
@@ -294,7 +299,7 @@ public class ABFileUtil {
         return null;
     }
 
-    public static File uri2FileInteral(Context context, Uri uri) {
+    public static File uri2FileInteraction(Context context, Uri uri) {
         if (null == uri) {
             return null;
         }
@@ -823,5 +828,46 @@ public class ABFileUtil {
         }
         // 最后通知图库更新
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
+    }
+
+    private static String getStoragePath(Context mContext, boolean is_removale) {
+
+        StorageManager mStorageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);
+        Class<?> storageVolumeClazz = null;
+        try {
+            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
+            Method getPath = storageVolumeClazz.getMethod("getPath");
+            Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
+            Object result = getVolumeList.invoke(mStorageManager);
+            final int length = Array.getLength(result);
+            for (int i = 0; i < length; i++) {
+                Object storageVolumeElement = Array.get(result, i);
+                String path = (String) getPath.invoke(storageVolumeElement);
+                boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
+                if (is_removale == removable) {
+                    return path;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static boolean isHaveExternalStorage(Context context) {
+        //判断sdcard是否存在
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Toast.makeText(context, "没有找到SDCard!", Toast.LENGTH_LONG);
+            return false;
+        } else {
+            return true;
+        }
     }
 }

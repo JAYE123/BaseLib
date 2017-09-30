@@ -134,7 +134,7 @@ public class ABCrashHandler implements UncaughtExceptionHandler {
             }
         }.start();
 
-        L.e(TAG, "ABCrashHandler,deviceInfos: \n" + ABAppUtil.collectDeviceInfoStr(mContext), ex);
+        L.e(TAG, "ABCrashHandler,deviceInfo: \n" + ABAppUtil.collectDeviceInfoStr(mContext), ex);
         return true;
     }
 

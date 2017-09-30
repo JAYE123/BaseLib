@@ -26,20 +26,17 @@ import core.base.log.L;
 public class LazyFragment extends BaseFragment {
 	private boolean isInit = false;
 	private Bundle savedInstanceState;
-	public static final String INTENT_BOOLEAN_LAZYLOAD = "intent_boolean_lazyLoad";
+	public static final String INTENT_BOOLEAN_LAZY_LOAD = "intent_boolean_lazyLoad";
 	private boolean isLazyLoad = true;
 	private FrameLayout layout;
 	protected String TAG = getClass().getName();
 
-	protected void le(String msg) {
-		L.e(TAG, msg);
-	}
 	@Deprecated
 	protected final void onCreateView(Bundle savedInstanceState) {
 		super.onCreateView(savedInstanceState);
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-			isLazyLoad = bundle.getBoolean(INTENT_BOOLEAN_LAZYLOAD, isLazyLoad);
+			isLazyLoad = bundle.getBoolean(INTENT_BOOLEAN_LAZY_LOAD, isLazyLoad);
 		}
 		if (isLazyLoad) {
 			if (getUserVisibleHint() && !isInit) {

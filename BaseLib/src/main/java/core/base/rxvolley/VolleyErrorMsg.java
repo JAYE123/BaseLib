@@ -2,42 +2,42 @@ package core.base.rxvolley;
 
 /**
  * VolleyErro处理
- * 
+ *
  * @author ping 2014-4-11 下午2:04:42
  */
 public class VolleyErrorMsg {
-	public static String getMessage(int errorNo,String errorMsg) {
-		String result = null;
-		if(errorNo!=-1){
-				switch (errorNo) {
-				case 400:
-					result = "服务器忙";
-					break;
-				case 403:
-					result = "服务器忙";
-					break;
-				case 404:
-					result = "服务器忙";
-					break;
-				case 500:
-					result = "服务器忙";
-					break;
-				case 502:
-					result = "网络不通，请确认您手机已联网";
-					break;
-				default:
-					result = "网络请求错误" + errorNo;
-					break;
-				}
-			} else {
-				if (errorMsg == null) {
-					result = "网络连接超时";
-				} else {
-					if (errorMsg.startsWith("java.net.ConnectException:")) {
-						result = "网络连接超时";
-					}else if (errorMsg.startsWith("java.lang.IllegalArgumentException:")) {
-						result = "请求参数错误";
-					}
+    public static String getMessage(int errorNo, String errorMsg) {
+        String result;
+        if (errorNo != 1) {
+            switch (errorNo) {
+                case 400:
+                    result = "服务器忙";
+                    break;
+                case 403:
+                    result = "服务器忙";
+                    break;
+                case 404:
+                    result = "服务器忙";
+                    break;
+                case 500:
+                    result = "服务器忙";
+                    break;
+                case 502:
+                    result = "未连接网络";
+                    break;
+                default:
+                    result = "网络请求错误" + errorNo;
+                    break;
+            }
+        } else {
+            if (errorMsg == null) {
+                result = "网络连接超时";
+            } else {
+                if (errorMsg.startsWith("java.net.ConnectException:")) {
+                    result = "网络连接超时";
+                } else if (errorMsg.startsWith("java.lang.IllegalArgumentException:")) {
+                    result = "请求参数错误";
+                }
 //					else if (errorMsg.startsWith("java.lang.RuntimeException:")) {
 //						result = "服务器忙";
 //					} else if (errorMsg.startsWith("java.net.UnknownHostException:")) {
@@ -45,13 +45,13 @@ public class VolleyErrorMsg {
 //					}  else if (errorMsg.startsWith("java.net.SocketException:")) {
 //						result = "服务器忙";
 //					}
-					else {
-						result = "服务器忙";
-					}
-				}
-			}
-		return result;
-	}
+                else {
+                    result = "服务器忙";
+                }
+            }
+        }
+        return result;
+    }
 }
 
 // 超时

@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BaseCore.iml" filepath="$PROJECT_DIR$/BaseCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Base.iml" filepath="$PROJECT_DIR$/Base.iml" />
       <module fileurl="file://$PROJECT_DIR$/BaseLib/BaseLib.iml" filepath="$PROJECT_DIR$/BaseLib/BaseLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BaseLib.iml" filepath="$PROJECT_DIR$/BaseLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/BaseLib/BaseLib-BaseLib.iml" filepath="$PROJECT_DIR$/BaseLib/BaseLib-BaseLib.iml" />
     </modules>
   </component>
 </project>

@@ -10,12 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.ClipboardManager;
@@ -28,6 +31,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -38,7 +43,6 @@ import java.util.Set;
 
 import core.base.application.ABApplication;
 import core.base.log.L;
-import core.base.system.SystemBarTintManager;
 
 /**
  * 当前程序是否后台运行
@@ -63,21 +67,20 @@ public class ABAppUtil {
 
     /**
      * 创建一个唯一的快捷方式
-     *
+     * <p>
      * <-创建快捷方式权限
-     *     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
-     *      <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+     * <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+     * <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
      *
      * @param context
      * @param appNameId
      * @param ic_launcherId
-     * @param launcherActivity
-     * Created by ${刘红亮} on 15-8-11 下午8:06.
+     * @param launcherActivity Created by ${刘红亮} on 15-8-11 下午8:06.
      */
-    public static void createOnlyShortcut(Context context, int appNameId, int ic_launcherId,Class launcherActivity) {
+    public static void createOnlyShortcut(Context context, int appNameId, int ic_launcherId, Class launcherActivity) {
         ABPrefsUtil.init(context, "shortcut", Context.MODE_PRIVATE);
         ABPrefsUtil abPrefsUtil = ABPrefsUtil.getPrefsUtil("shortcut");
-        if(abPrefsUtil.getBoolean("isFirst",true)){ //是第一次启动应用
+        if (abPrefsUtil.getBoolean("isFirst", true)) { //是第一次启动应用
             deleteShortCut(context, appNameId); //防止应用被清空数据的判断标识位为true，可桌面已有图标的情况
             Intent shortcut = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
             shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, context.getString(appNameId));
@@ -89,12 +92,13 @@ public class ABAppUtil {
             Intent.ShortcutIconResource iconRes = Intent.ShortcutIconResource.fromContext(context, ic_launcherId);
             shortcut.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconRes);
             context.sendBroadcast(shortcut);
-            abPrefsUtil.putBoolean("isFirst",false).commit();
+            abPrefsUtil.putBoolean("isFirst", false).commit();
         }
     }
+
     /**
      * 删除快捷方式
-     Created by ${刘红亮} on 15-8-11 下午8:06.
+     * Created by ${刘红亮} on 15-8-11 下午8:06.
      */
     public static void deleteShortCut(Context activity, int appNameId) {
         Intent shortcut = new Intent("com.android.launcher.action.UNINSTALL_SHORTCUT");
@@ -106,6 +110,19 @@ public class ABAppUtil {
         intent.addCategory("android.intent.category.LAUNCHER");
         shortcut.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
         activity.sendBroadcast(shortcut);
+    }
+
+    /**
+     * 获取屏幕的最小宽度dp
+     *
+     * @param context
+     * @return
+     */
+    private static int getSmallestScreenWidthDp(Context context) {
+
+        Configuration config = context.getResources().getConfiguration();
+
+        return config.smallestScreenWidthDp;
     }
 
 
@@ -154,6 +171,7 @@ public class ABAppUtil {
         L.d(TAG, "isBackground: " + false);
         return false;
     }
+
     /**
      * @return boolean 返回类型
      * @throws
@@ -168,12 +186,13 @@ public class ABAppUtil {
 
         int versionCode = sp.getInt("versionCode", 0);
         int newAppVersion = getAppVersionCode();
-        if (versionCode!=newAppVersion) {
+        if (versionCode != newAppVersion) {
             sp.edit().putInt("version", newAppVersion).commit();
             isFirstRun = true;
         }
         return isFirstRun;
     }
+
     /**
      * 判断手机是否处理睡眠
      *
@@ -384,6 +403,7 @@ public class ABAppUtil {
 
         return versionName;
     }
+
     /**
      * 获取当前应用程序的版本号
      *
@@ -444,7 +464,7 @@ public class ABAppUtil {
                 field.setAccessible(true);
                 mDeviceCrashInfo.put(field.getName(), field.get(null));
 //                if (DEBUG) {
-                    L.d(TAG, field.getName() + " : " + field.get(null));
+                L.d(TAG, field.getName() + " : " + field.get(null));
 //                }
             } catch (Exception e) {
                 L.e(TAG, "Error while collect crash info", e);
@@ -478,8 +498,8 @@ public class ABAppUtil {
      * @return
      */
     public static boolean haveSDCard() {
-        return android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
+        return Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED);
     }
 
     /**
@@ -489,8 +509,8 @@ public class ABAppUtil {
     public static void hideSoftInput(Context context) {
         View view = ((Activity) context).getWindow().peekDecorView();
         if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -500,8 +520,8 @@ public class ABAppUtil {
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
     public static void hideSoftInput(Context context, EditText edit) {
         edit.clearFocus();
-        InputMethodManager inputmanger = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputmanger.hideSoftInputFromWindow(edit.getWindowToken(), 0);
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(edit.getWindowToken(), 0);
     }
 
     /**
@@ -524,6 +544,7 @@ public class ABAppUtil {
         InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
+
     /**
      * 复制文本到手机中
      *
@@ -535,8 +556,10 @@ public class ABAppUtil {
                 .getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setText(content);
     }
+
     /**
      * 获得栈顶activity
+     *
      * @param context
      * @return
      */
@@ -657,6 +680,23 @@ public class ABAppUtil {
         }
     }
 
+    /**
+     * 获得本机ip地址
+     *
+     * @return
+     */
+    public static String getWiFiHostIpAddress(Context context) {
+        //获取wifi服务
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        //判断wifi是否开启
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        String ip = (ipAddress & 0xFF) + "." + ((ipAddress >> 8) & 0xFF) + "." + ((ipAddress >> 16) & 0xFF) + "." + (ipAddress >> 24 & 0xFF);
+        return ip;
+    }
 
     /**
      * 返回状态：当前的网络链接状态
@@ -686,6 +726,7 @@ public class ABAppUtil {
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
     public static int dip2px(Context context, float dpValue) {
+//        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, Resources.getSystem().getDisplayMetrics());
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
@@ -723,6 +764,7 @@ public class ABAppUtil {
 
     /**
      * 获取状态栏高度
+     *
      * @param context
      * @return
      */
@@ -751,19 +793,20 @@ public class ABAppUtil {
 
     /**
      * 设置状态栏沉浸，包含顶部状态栏和底部状态栏
+     *
      * @param activity
      * @param statusColor 顶部颜色
      */
-    public static void setStatusImmerse(Activity activity,int statusColor,int navColor,boolean darkmode){
-        if("m1".equals(Build.MODEL)){
+    public static void setStatusImmerse(Activity activity, int statusColor, int navColor, boolean darkmode) {
+        if ("m1".equals(Build.MODEL)) {
             return;
         }
-        if(darkmode){
+        if (darkmode) {
             setMiuiStatusBarDarkMode(true, activity);
-            setMeiZuStatusBarDarkIcon(activity.getWindow(),true);
+            setMeiZuStatusBarDarkIcon(activity.getWindow(), true);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             SystemBarTintManager tintManager = new SystemBarTintManager(activity);
@@ -771,19 +814,63 @@ public class ABAppUtil {
             tintManager.setStatusBarTintEnabled(darkmode);
             tintManager.setNavigationBarTintColor(navColor);
             tintManager.setNavigationBarTintEnabled(darkmode);
-            setRootView(activity,true);
+            setRootView(activity, true);
         }
     }
+
+    private static final int INVALID_VAL = -1;
+    // 默认浅灰色
+    private static final int COLOR_DEFAULT = Color.parseColor("#20000000");
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setStatusBarColor(Activity activity, int statusColor) {
+        // 5.0 系统以上，直接 setStatusBarColor()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (statusColor != INVALID_VAL) {
+                activity.getWindow().setStatusBarColor(statusColor);
+            }
+        }
+
+        // 4.4 系统
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+////            // 实际测试中发现在国产某些rom上，xml声明的会不起作用，故在代码里增加
+////            WindowManager.LayoutParams localLayoutParams = activity.getWindow().getAttributes();
+////            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
+//
+//
+//            int color = COLOR_DEFAULT;
+//            ViewGroup contentView = (ViewGroup) activity.findViewById(android.R.id.content);    // 一般为FrameLayout
+//            if (statusColor != INVALID_VAL) {
+//                color = statusColor;
+//            }
+//
+//            View statusBarView = contentView.getChildAt(0);
+//            if (statusBarView != null && statusBarView.getMeasuredHeight() == getStatusBarHeight(activity)) {
+//                statusBarView.setBackgroundColor(color);
+//                return;
+//            }
+//
+//            statusBarView = new View(activity);
+//            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                    getStatusBarHeight(activity));
+//            statusBarView.setBackgroundColor(color);
+//            contentView.addView(statusBarView, lp);
+//        }
+
+    }
+
     /**
      * 设置根布局参数 是否需要fitsSystemWindows
      */
-    public static void setRootView(Activity activity,boolean fitsSystemWindows) {
+    public static void setRootView(Activity activity, boolean fitsSystemWindows) {
         ViewGroup rootView = (ViewGroup) ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
         rootView.setFitsSystemWindows(fitsSystemWindows);
         rootView.setClipToPadding(fitsSystemWindows);
     }
+
     /**
-     *      设置miui状态栏黑色字体
+     * 设置miui状态栏黑色字体
+     *
      * @param darkmode
      * @param activity
      */
@@ -803,22 +890,23 @@ public class ABAppUtil {
 
     /**
      * 设置魅族状态栏黑色字体
+     *
      * @param window
      * @param dark
      * @return
      */
     public static boolean setMeiZuStatusBarDarkIcon(Window window, boolean dark) {
         boolean result = false;
-        if(window != null) {
+        if (window != null) {
             try {
                 WindowManager.LayoutParams e = window.getAttributes();
                 Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
                 Field meizuFlags = WindowManager.LayoutParams.class.getDeclaredField("meizuFlags");
                 darkFlag.setAccessible(true);
                 meizuFlags.setAccessible(true);
-                int bit = darkFlag.getInt((Object)null);
+                int bit = darkFlag.getInt((Object) null);
                 int value = meizuFlags.getInt(e);
-                if(dark) {
+                if (dark) {
                     value |= bit;
                 } else {
                     value &= ~bit;
@@ -833,16 +921,18 @@ public class ABAppUtil {
         }
         return result;
     }
-    public static String getCacheSize(Context context){
+
+    public static String getCacheSize(Context context) {
         long directorySize = ABFileUtil.getDirectorySize(context.getCacheDir());
-        L.e(TAG,"cacheSize="+directorySize);
-        double kiloByte = directorySize/1024.;
-        if(kiloByte < 1) {
+        L.e(TAG, "cacheSize=" + directorySize);
+        double kiloByte = directorySize / 1024.;
+        if (kiloByte < 1) {
             return "没有缓存";
         }
         return ABFileUtil.formatFileSize(directorySize);
     }
-    public static void clearCache(Context context){
+
+    public static void clearCache(Context context) {
         ABFileUtil.clearDirectory(context.getCacheDir());
     }
 }

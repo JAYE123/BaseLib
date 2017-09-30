@@ -1,13 +1,13 @@
 package core.base.time;
 
-import core.base.log.L;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
+import core.base.log.L;
 
 /**
  * 日期时间转换工具
@@ -101,6 +101,7 @@ public class ABTimeUtil {
     public static String millisToStringMiddle(long millis, boolean isWhole, boolean isFormat) {
         return millisToStringMiddle(millis, isWhole, isFormat, "小时", "分钟", "秒");
     }
+
     public static String millisToStringMiddle(long millis, boolean isWhole, boolean isFormat, String hUnit, String mUnit, String sUnit) {
         String h = "";
         String m = "";
@@ -204,6 +205,17 @@ public class ABTimeUtil {
         return millisToStringDate(millis, "yyyy-MM-dd HH:mm:ss");
     }
 
+    //时间戳转化为Sting或Date
+    public static String millisToStringDateTwo(String seconds, String format) {
+
+        if (seconds == null || seconds.isEmpty() || seconds.equals("null")) {
+            return "";
+        }
+        if (format == null || format.isEmpty()) format = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(new Date(Long.valueOf(seconds + "000")));
+    }
+
     /**
      * 把日期毫秒转化为字符串。
      *
@@ -214,7 +226,7 @@ public class ABTimeUtil {
      */
     public static String millisToStringDate(long millis, String pattern) {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
-        return format.format(new Date(millis));
+        return format.format(new Date(Long.valueOf(millis + "000")));
     }
 
     /**
@@ -385,7 +397,7 @@ public class ABTimeUtil {
 
 
     /**
-     *以下来源于聊天的timeinfo工具类中
+     * 以下来源于聊天的timeinfo工具类中
      */
     private static final long MILLIS_PER_DAY = 86400000L; // 86400000=24*60*60*1000
     // 一天
@@ -465,7 +477,7 @@ public class ABTimeUtil {
             i %= 60;
         }
         int k = paramInt % 60;
-        return String.format("%02d:%02d", new Object[] { Integer.valueOf(i), Integer.valueOf(k) });
+        return String.format("%02d:%02d", new Object[]{Integer.valueOf(i), Integer.valueOf(k)});
     }
 
     public static TimeInfo getYesterdayStartAndEndTime() {
@@ -605,12 +617,13 @@ public class ABTimeUtil {
 
     /**
      * 获取昨天 yyyy-MM-dd
+     *
      * @return
      */
-    public static String getYesterday(){
-        Calendar   cal   =   Calendar.getInstance();
-        cal.add(Calendar.DATE,   -1);
-        String yesterday = new SimpleDateFormat( "yyyy-MM-dd").format(cal.getTime());
+    public static String getYesterday() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         return yesterday;
     }
 
@@ -641,34 +654,34 @@ public class ABTimeUtil {
             //如果月份相等，在比较日期，如果当前日，小于出生日，也减1，表示不满多少周岁
             if (monthNow == monthBirth) {
                 if (dayOfMonthNow < dayOfMonthBirth) age--;
-            }else{
+            } else {
                 age--;
             }
         }
-        System.out.println("age:"+age);
+        System.out.println("age:" + age);
         return age;
     }
 
 
-    public static int getCurrentYear(){
+    public static int getCurrentYear() {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         return year;
     }
 
-    public static int getCurrentMonth(){
+    public static int getCurrentMonth() {
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);
         return month;
     }
 
-    public static int getDayOfMonth(){
+    public static int getDayOfMonth() {
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_MONTH);
         return day;
     }
 
-    public static boolean compareDate(String date1,Date d2){
+    public static boolean compareDate(String date1, Date d2) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date d1 = format.parse(date1);

@@ -95,15 +95,15 @@ public class ObjectUtil {
     public static boolean saveObject(Context context, Object data,
                                      String filename) {
         FileOutputStream out;
-        ObjectOutputStream oout;
+        ObjectOutputStream outputStream;
         try {
             out = context.openFileOutput(filename + ".odb",
                     Context.MODE_PRIVATE);
-            oout = new ObjectOutputStream(out);
-            oout.writeObject(data);
-            oout.flush();
+            outputStream = new ObjectOutputStream(out);
+            outputStream.writeObject(data);
+            outputStream.flush();
             out.flush();
-            oout.close();
+            outputStream.close();
             out.close();
             return true;
         } catch (Exception e) {

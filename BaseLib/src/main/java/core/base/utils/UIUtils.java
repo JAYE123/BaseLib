@@ -17,11 +17,11 @@ import android.widget.EditText;
  */
 public class UIUtils {
     /**
-     * 多个Edittet都要填写，这个button才能够被点击
+     * 多个EditText都要填写，这个button才能够被点击
      * @param button 当前button
-     * @param editTexts 当前要判断的所有edittext
+     * @param editTexts 当前要判断的所有EditText
      */
-    public static void setButtonEnableByEdittext(final Button button,final EditText...editTexts){
+    public static void setButtonEnableByEditText(final Button button,final EditText...editTexts){
         button.setEnabled(false);
         for(int i=0;i<editTexts.length;i++){
             editTexts[i].addTextChangedListener(new TextWatcher() {
@@ -36,7 +36,7 @@ public class UIUtils {
                 }
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if(isEveryEdittextNotNull(editTexts)){
+                    if(isEveryEditTextNotNull(editTexts)){
                         button.setEnabled(true);
                     }else{
                         button.setEnabled(false);
@@ -51,7 +51,7 @@ public class UIUtils {
      * @param editTexts 要判断的edittext
      * @return 是否所有的不为空
      */
-    private static boolean isEveryEdittextNotNull(EditText...editTexts){
+    private static boolean isEveryEditTextNotNull(EditText...editTexts){
         boolean flag = true;
         for(EditText editText:editTexts){
             if(TextUtils.isEmpty(editText.getText().toString().trim())){
