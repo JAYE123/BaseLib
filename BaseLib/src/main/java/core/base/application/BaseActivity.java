@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.umeng.analytics.MobclickAgent;
 
 import core.base.manager.AppManager;
 import core.base.rxvolley.NetRequest;
@@ -75,7 +74,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
     }
 
     /**
@@ -83,7 +81,6 @@ public class BaseActivity extends AppCompatActivity {
      */
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
     }
 
     /**

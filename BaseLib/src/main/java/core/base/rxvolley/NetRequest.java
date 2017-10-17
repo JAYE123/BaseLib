@@ -245,7 +245,7 @@ public class NetRequest {
      *
      * @param params
      */
-    public static void addEncrypt(HttpParams params) {
+    private static void addEncrypt(HttpParams params) {
         if (safeRequest) {
             String appSign = HttpEncrypt.getAppSign(params, LoginControl.getUserPassword());
             if (params == null) {

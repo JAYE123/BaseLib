@@ -3,8 +3,6 @@ package core.base.manager;
 import android.app.Activity;
 import android.content.Context;
 
-import com.umeng.analytics.MobclickAgent;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -150,8 +148,6 @@ public class AppManager {
      * 退出应用程序
      */
     public void AppExit(Context context) {
-        //友盟退出统计
-        MobclickAgent.onKillProcess(context);
         try {
             finishAllActivity();
             android.os.Process.killProcess(android.os.Process.myPid());

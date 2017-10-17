@@ -150,6 +150,6 @@ public class OkHttpStack implements IHttpStack {
     private static RequestBody createRequestBody(Request r) {
         final byte[] body = r.getBody();
         if (body == null) return null;
-        return RequestBody.create(MediaType.parse("application/x-www-form-urlencoded;charset=utf-8"), body);
+        return RequestBody.create(MediaType.parse(r.getBodyContentType()), body);//application/x-www-form-urlencoded;charset=utf-8
     }
 }

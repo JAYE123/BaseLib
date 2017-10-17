@@ -5,7 +5,6 @@ import android.app.Application;
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
 import com.squareup.okhttp.OkHttpClient;
-import com.umeng.analytics.MobclickAgent;
 
 import core.base.exception.ABCrashHandler;
 import core.base.log.SP;
@@ -32,7 +31,6 @@ public class ABApplication extends Application {
         initPrefs();
         initOkHttp();
         initCrashHandler();
-        MobclickAgent.enableEncrypt(false);
     }
 
     private void initOkHttp() {
