@@ -1,1 +1,1 @@
-include ':BaseLib', ':Demo'
+include ':BaseLib'
