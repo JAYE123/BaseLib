@@ -1,8 +1,5 @@
 package core.base.rxvolley;
 
-/**
- * Created by 刘红亮 on 2016/3/6.
- */
 public interface HttpResultListener {
     /**
      * 联网回调方法

@@ -4,13 +4,13 @@ import android.app.Application;
 
 import com.kymjs.rxvolley.RxVolley;
 import com.kymjs.rxvolley.http.RequestQueue;
-import com.squareup.okhttp.OkHttpClient;
+import com.kymjs.rxvolley.toolbox.OkHttpStack;
 
 import core.base.exception.ABCrashHandler;
 import core.base.log.SP;
 import core.base.rxvolley.NetRequest;
-import core.base.rxvolley.OkHttpStack;
 import core.base.utils.ABPrefsUtil;
+import okhttp3.OkHttpClient;
 
 /**
  * 基础的application类

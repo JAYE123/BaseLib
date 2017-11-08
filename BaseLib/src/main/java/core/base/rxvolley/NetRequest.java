@@ -14,10 +14,9 @@ import com.kymjs.rxvolley.http.DefaultRetryPolicy;
 import com.kymjs.rxvolley.http.RequestQueue;
 
 import core.base.application.ABApplication;
-import core.base.control.LoginControl;
 import core.base.log.L;
 import core.base.manager.AppManager;
-import core.base.security.HttpEncrypt;
+import core.base.security.des3.Base64;
 import core.base.utils.ABAppUtil;
 
 public class NetRequest {
@@ -171,6 +170,7 @@ public class NetRequest {
      * @param callback         回调
      */
     public void download(String storeFilePath, String url, ProgressListener progressListener, HttpCallback callback) {
+//        addEncrypt(params);
         printUrl(url, params);
         RequestConfig config = new RequestConfig();
         config.mUrl = url;
@@ -183,6 +183,7 @@ public class NetRequest {
     }
 
     public void get(String url, HttpCallback callback) {
+//        addEncrypt(params);
         printUrl(url, params);
         if (ABAppUtil.isOnline(ABApplication.getInstance())) {
             new RxVolley.Builder()
@@ -192,12 +193,13 @@ public class NetRequest {
                     .callback(callback)
                     .doTask();
         } else {
-            callback.onFailure(502, "未连接网络", "无网络再请求前被拦截");
+            callback.onFailure(502, "未连接网络");
         }
 
     }
 
     public void post(String url, HttpCallback callback) {
+//        addEncrypt(params);
         printUrl(url, params);
         if (ABAppUtil.isOnline(ABApplication.getInstance())) {
             new RxVolley.Builder()
@@ -210,11 +212,12 @@ public class NetRequest {
                     .callback(callback)
                     .doTask();
         } else {
-            callback.onFailure(502, "未连接网络", "无网络再请求前被拦截");
+            callback.onFailure(502, "未连接网络");
         }
     }
 
     public void post(String url, ProgressListener listener, HttpCallback callback) {
+//        addEncrypt(params);
         printUrl(url, params);
         if (ABAppUtil.isOnline(ABApplication.getInstance())) {
             new RxVolley.Builder()
@@ -228,7 +231,7 @@ public class NetRequest {
                     .callback(callback)
                     .doTask();
         } else {
-            callback.onFailure(502, "未连接网络", "无网络再请求前被拦截");
+            callback.onFailure(502, "未连接网络");
         }
 
     }
@@ -245,14 +248,25 @@ public class NetRequest {
      *
      * @param params
      */
-    private static void addEncrypt(HttpParams params) {
-        if (safeRequest) {
-            String appSign = HttpEncrypt.getAppSign(params, LoginControl.getUserPassword());
-            if (params == null) {
-                params = new HttpParams();
-            }
-            params.put("sign", appSign);//添加加密参数
-        }
-    }
+//    private void addEncrypt(HttpParams params) {
+//        if (safeRequest) {
+//            String appSign = getAppSign(params);
+//            if (params == null) {
+//                params = new HttpParams();
+//            }
+//            params.put("sign", appSign);//添加加密参数
+//        }
+//
+//    }
+
+//    private String getAppSign(HttpParams params) {
+//        if (params == null) params = new HttpParams();
+//        String data = params.getUrlParams().toString().trim().replace("?", "").trim();
+//        L.e("###", data);
+//        byte[] encodedData = RSAUtil.encryptByPublicKey(data.getBytes(), CommentUrl.publicKey);
+//        String sign = Base64.encode(encodedData);
+//        L.e("###", sign);
+//        return sign;
+//    }
 
 }

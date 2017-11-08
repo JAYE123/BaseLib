@@ -43,37 +43,37 @@ public class HttpEncrypt {
 			return "exception";
 		}
 	}
-	public static String getAppSign(HttpParams params, String md5Pwd) {
-		if(params==null) params=new HttpParams();
-		StringBuffer buff = new StringBuffer();
-		ArrayList<HttpParamsEntry> urlParamsMap = params.getUrlParamsMap();
-		Set<String> tempSet = new TreeSet();
-		String sign = "";
-		for (HttpParamsEntry httpParamsEntry : urlParamsMap) {
-			if ("sign".equals(httpParamsEntry.k)) {
-				sign = httpParamsEntry.v;
-			} else {
-				tempSet.add(httpParamsEntry.k + httpParamsEntry.v);
-			}
-		}
-		for (String param : tempSet) {
-			buff.append(param).append("|");
-		}
-		if(md5Pwd!=null&&md5Pwd.length()==32){
-			buff.append(md5Pwd.substring(8, 24));
-		}
-//		L.e("hongliang","before_sign="+buff.toString());
-		try {
-//			String encode = Des3.encode(buff.toString());
-//			L.e("hongliang","sign_encode="+encode);
-//			sign = MD5.md5(Des3.encode(buff.toString()));
-//			L.e("hongliang","sign="+sign);
-			return MD5.md5(Des3.encode(buff.toString()));
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "exception";
-		}
-	}
+//	public static String getAppSign(HttpParams params, String md5Pwd) {
+//		if(params==null) params=new HttpParams();
+//		StringBuffer buff = new StringBuffer();
+//		ArrayList<HttpParamsEntry> urlParamsMap = params.getUrlParams();
+//		Set<String> tempSet = new TreeSet();
+//		String sign = "";
+//		for (HttpParamsEntry httpParamsEntry : urlParamsMap) {
+//			if ("sign".equals(httpParamsEntry.k)) {
+//				sign = httpParamsEntry.v;
+//			} else {
+//				tempSet.add(httpParamsEntry.k + httpParamsEntry.v);
+//			}
+//		}
+//		for (String param : tempSet) {
+//			buff.append(param).append("|");
+//		}
+//		if(md5Pwd!=null&&md5Pwd.length()==32){
+//			buff.append(md5Pwd.substring(8, 24));
+//		}
+////		L.e("hongliang","before_sign="+buff.toString());
+//		try {
+////			String encode = Des3.encode(buff.toString());
+////			L.e("hongliang","sign_encode="+encode);
+////			sign = MD5.md5(Des3.encode(buff.toString()));
+////			L.e("hongliang","sign="+sign);
+//			return MD5.md5(Des3.encode(buff.toString()));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return "exception";
+//		}
+//	}
 
 	/**
 	 * 

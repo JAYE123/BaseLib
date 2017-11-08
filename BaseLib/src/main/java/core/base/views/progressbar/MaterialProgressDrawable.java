@@ -403,7 +403,7 @@ public class MaterialProgressDrawable extends Drawable implements Animatable {
         this.mShowArrowOnFirstStart = showArrowOnFirstStart;
     }
 
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef({LARGE, DEFAULT})
     public @interface ProgressDrawableSize {
     }

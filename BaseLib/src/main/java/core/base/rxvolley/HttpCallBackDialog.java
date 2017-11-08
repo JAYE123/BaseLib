@@ -12,9 +12,6 @@ import core.base.application.ABApplication;
 import core.base.log.L;
 import core.base.log.T;
 
-/**
- * Created by 刘红亮 on 2016/3/6.
- */
 public class HttpCallBackDialog extends HttpCallback {
 
     private WeakReference<Dialog> dialog;
@@ -60,9 +57,9 @@ public class HttpCallBackDialog extends HttpCallback {
     }
 
     @Override
-    public void onFailure(int errorNo, String strMsg, String completionInfo) {
-        super.onFailure(errorNo, strMsg, completionInfo);
-        L.e("network-error", completionInfo + "#strMsg#" + strMsg + "#errorNo#" + errorNo);
+    public void onFailure(int errorNo, String strMsg) {
+        super.onFailure(errorNo, strMsg);
+        L.e("network-error", "#strMsg#" + strMsg + "#errorNo#" + errorNo);
         if (listenerWeakReference.get() != null) {
             listenerWeakReference.get().onHttpResult(null, errorNo, flag, strMsg);
         }
